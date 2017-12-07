@@ -1,0 +1,31 @@
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd"
+    stopOnError="true"
+    stopOnFailure="true"
+    stopOnIncomplete="true"
+    stopOnSkipped="true"
+    stopOnRisky="true"
+    bootstrap="vendor/autoload.php"
+    cacheTokens="false"
+    colors="true"
+    verbose="true"
+>
+    <testsuites>
+        <testsuite name="components">
+            <directory>tests/components</directory>
+        </testsuite>
+
+        <testsuite name="helpers">
+            <directory>tests/helpers</directory>
+        </testsuite>
+
+        <testsuite name="rules">
+            <directory>tests/rules</directory>
+        </testsuite>
+
+        <testsuite name="application">
+            <file>YavlTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>

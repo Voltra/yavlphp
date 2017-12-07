@@ -1,0 +1,27 @@
+{
+  "name": "voltra/yavlphp",
+  "version": "1.0.0",
+  "description": "The PHP implementation of yavljs (https://www.npmjs.com/package/yavljs) that allows you to use the same definitions for front-end and back-end",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Voltra",
+      "email": "ludwig.guerin.98@gmx.fr"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "YavlPhp\\": "src",
+      "YavlPhp\\Tests\\": "tests"
+    }
+  },
+  "require": {
+    "php": ">=7.1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.5",
+    "php-mock/php-mock": "^2.0",
+    "php-mock/php-mock-phpunit": "^2.0"
+  }
+}
