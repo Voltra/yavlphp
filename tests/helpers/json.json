@@ -1,0 +1,10 @@
+{
+  "unit": "test",
+  "tests": [
+    "src",
+    "tests",
+    42
+  ],
+  "42": 404.404,
+  "NaN": null
+}

@@ -16,6 +16,7 @@ class Regex{
     public function extractGroupsFrom(string $subject) : array{
         $matches = [];
         preg_match($this->re, $subject, $matches);
+        array_shift($matches);
         return $matches;
     }
 }

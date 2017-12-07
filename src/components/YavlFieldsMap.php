@@ -15,8 +15,8 @@ final class YavlFieldsMap {
         if(!AssociativeArrayHelper::isAssociative($map))
             throw new InvalidArgumentException("The given rule map is not an associative array");
 
-        if(!ArrayHelper::valuesAreArray($map))
-            throw new InvalidArgumentException("The values of the rule map are not all arrays");
+        if(!ArrayHelper::valuesAreAssociativeArray($map))
+            throw new InvalidArgumentException("The values of the rule map are not all associative arrays");
 
         $this->map = array_merge([], $map);
     }
@@ -30,10 +30,9 @@ final class YavlFieldsMap {
     }
 
     public function getRulesFor(string $fieldName) : array{
-        return $this->map[$fieldName];
-    }
+        if($this->hasRulesFor($fieldName))
+            return $this->map[$fieldName];
 
-    public function asArray() : array{
-        return $this->map;
+        throw new InvalidArgumentException("No such field");
     }
 }

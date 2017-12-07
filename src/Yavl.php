@@ -74,7 +74,7 @@ class Yavl {
 
         $errors = [];
 
-        array_walk($this->fields->asArray(), function(array $rules, string $field) use($fieldsValues, $errors){
+        array_walk($this->fields->getMap(), function(array $rules, string $field) use($fieldsValues, $errors){
             $isFilled = $fieldsValues[$field] !== "";
             $required = $this->isRequired($field, $rules);
 
