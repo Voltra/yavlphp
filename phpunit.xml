@@ -12,12 +12,12 @@
     verbose="true"
 >
     <testsuites>
-        <testsuite name="components">
-            <directory>tests/components</directory>
-        </testsuite>
-
         <testsuite name="helpers">
             <directory>tests/helpers</directory>
+        </testsuite>
+
+        <testsuite name="components">
+            <directory>tests/components</directory>
         </testsuite>
 
         <testsuite name="rules">
