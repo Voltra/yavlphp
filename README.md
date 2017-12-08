@@ -24,7 +24,7 @@ My goal was that you could both validate on the front-end and back-end part of y
 
 There's only one difference, the **field's name** .
 
-Where using [yavljs](https://www.npmjs.com/package/yavljs) you could simply give names for the sake of semantic, in [yavlphp] things are different, let's illustrate this with an example:
+Where using [yavljs](https://www.npmjs.com/package/yavljs) you could simply give names for the sake of semantic, in [yavlphp](https://packagist.org/packages/voltra/yavlphp) things are different, let's illustrate this with an example:
 
 ```html
 <form id="form">
@@ -304,3 +304,12 @@ You can also get a list of the defined plugins, this might be useful if you have
 
 To do so, you need to call your validator's method `getPluginNamesList` which returns the names of all the plugins (cf. the `getNameforJson`method).
 
+
+
+# In need of extra information ?
+
+To refer to how [yavlphp]() works, please refer to this [page](https://www.npmjs.com/package/yavljs) (yavljs on npm).
+
+
+
+To test your plugins with PHPUnit, you can inherit from `YavlPhp\Tests\Components\YavlFunctionTest_Abstract`.
