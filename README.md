@@ -1,6 +1,6 @@
 # What is yavlphp ?
 
-The PHP implementation of yavljs (https://www.npmjs.com/package/yavljs) that allows you to use the same definitions for front-end and back-end validation.
+The PHP implementation of [yavljs](https://www.npmjs.com/package/yavljs) that allows you to use the same definitions for front-end and back-end validation.
 
 
 
@@ -124,7 +124,7 @@ As you can see, the names that were only used for semantic are now required to b
 
 This is due to the fact that the vast majority of use cases will use the request's variable to validate the form.
 
-Other than this, there are no differene in how the validation process is executed.
+Other than this, there are no differences in how the validation process is executed.
 
 
 
@@ -136,7 +136,7 @@ With composer installed, simply run the following command in your application's 
 
 `composer require voltra/yavlphp`
 
-This will automatically install [yavlphp] and its dependencies (if there are any).
+This will automatically install [yavlphp](https://packagist.org/packages/voltra/yavlphp) and its dependencies (if there are any).
 
 
 
