@@ -25,7 +25,7 @@
         </testsuite>
 
         <testsuite name="application">
-            <file>YavlTest.php</file>
+            <file>tests/YavlTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

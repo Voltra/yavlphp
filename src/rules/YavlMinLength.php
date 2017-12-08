@@ -7,7 +7,11 @@ use YavlPhp\Components\YavlValidationFunction;
 
 final class YavlMinLength extends YavlValidationFunction {
 
-    public function __call(YavlLocaleMap $locale, $value, $expected, array $fieldsValues): ?string {
-        return (strlen("{$value}") >= intval($expected)) ? null : $locale->get("minLength");
+    public function call(YavlLocaleMap $locale, $value, $expected, array $fieldsValues): ?string {
+        return (strlen("{$value}") >= intval($expected)) ? null : $locale->get($this->getNameForJson());
+    }
+
+    public function getNameForJson(): string {
+        return "minLength";
     }
 }

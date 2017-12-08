@@ -8,8 +8,12 @@ use YavlPhp\Helpers\Regex;
 
 final class YavlRegex extends YavlValidationFunction {
 
-    public function __call(YavlLocaleMap $locale, $value, $expected, array $fieldsValues): ?string {
+    public function call(YavlLocaleMap $locale, $value, $expected, array $fieldsValues): ?string {
         $re = new Regex("/{$expected}/");
-        return ($re->appliesTo("{$value}") ? null : $locale->get("nomatch_regex"));
+        return ($re->appliesTo("{$value}") ? null : $locale->get($this->getNameForJson()));
+    }
+
+    function getNameForJson(): string {
+        return "nomatch_regex";
     }
 }

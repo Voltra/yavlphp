@@ -21,11 +21,13 @@ final class YavlLocaleMap {
     protected $locale;
 
     public function __construct(array $localeMap){
-        if(!ArrayHelper::valuesAreString($localeMap))
-            throw new InvalidArgumentException("The values of the locale map are not all strings");
+        if(!ArrayHelper::isEmpty($localeMap)) {
+            if (!ArrayHelper::valuesAreString($localeMap))
+                throw new InvalidArgumentException("The values of the locale map are not all strings");
 
-        if(!AssociativeArrayHelper::isAssociative($localeMap))
-            throw new InvalidArgumentException("The given locale map is not an associative array");
+            if (!AssociativeArrayHelper::isAssociative($localeMap))
+                throw new InvalidArgumentException("The given locale map is not an associative array (or is not empty)");
+        }
 
         $this->locale = array_merge(self::defaults, $localeMap);
     }
@@ -34,10 +36,14 @@ final class YavlLocaleMap {
         return array_key_exists($key, $this->locale);
     }
 
-    public function get(string $key) : bool{
+    public function get(string $key) : string{
         if($this->has($key))
             return $this->locale[$key];
 
         throw new InvalidArgumentException("No locale error message available for: {$key}");
+    }
+
+    public function asArray() : array{
+        return $this->locale;
     }
 }

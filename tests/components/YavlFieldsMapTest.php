@@ -4,6 +4,7 @@ namespace YavlPhp\Tests\Components;
 use InvalidArgumentException;
 use stdClass;
 use YavlPhp\Components\YavlFieldsMap;
+use YavlPhp\Helpers\AssociativeArrayHelper;
 use YavlPhp\Tests\PHPUnit;
 
 class YavlFieldsMapTest extends PHPUnit{
@@ -92,7 +93,7 @@ class YavlFieldsMapTest extends PHPUnit{
     public function correctAssociativeArrayProvider(){
         return [
             [
-                ["0"=>["unit"=>"test"], "a"=>["a"=>1]]
+                ["0"=>["unit"=>"test"], "b"=>["a"=>1]]
             ],
             [
                 ["0"=>["ab"=>"ba"], "1"=>["a"=>1], "b"=>["a"=>1]]
@@ -113,4 +114,67 @@ class YavlFieldsMapTest extends PHPUnit{
         $v = new YavlFieldsMap($arr);
         self::assertEquals($arr, $v->getMap());
     }
+
+    /**
+     * @test
+     * @covers YavlFieldsMap::hasRulesFor
+     * @dataProvider invalidFieldNameAndRulesProvider
+     * @param string $fieldName
+     * @param array $rules
+     */
+    public function notInArrayMeansNoRulesForIt(string $fieldName, array $rules){
+        $v = new YavlFieldsMap($rules);
+        self::assertFalse($v->hasRulesFor($fieldName));
+    }
+
+    public function invalidFieldNameAndRulesProvider(){
+        return array_map(function(array $paramList){
+            return array_merge(["INVALID NAME HERE"], $paramList);
+        }, $this->correctAssociativeArrayProvider());
+    }
+
+    /**
+     * @test
+     * @covers YavlFieldsMap::hasRulesFor
+     * @dataProvider validFieldNameAndRulesProvider
+     * @param string $fieldName
+     * @param array $rules
+     */
+    public function inArrayMeansRulesForIt(string $fieldName, array $rules){
+        $v = new YavlFieldsMap($rules);
+        self::assertTrue($v->hasRulesFor($fieldName));
+    }
+
+    public function validFieldNameAndRulesProvider(){
+        return array_map(function(array $paramList){
+            return array_merge(["b"], $paramList);
+        }, $this->correctAssociativeArrayProvider());
+    }
+
+    /**
+     * @test
+     * @covers YavlFieldsMap::getRulesFor
+     * @dataProvider invalidFieldNameAndRulesProvider
+     * @expectedException InvalidArgumentException
+     * @param string $fieldName
+     * @param array $rules
+     */
+    public function notInArrayMeansThatCannotGetItsRules(string $fieldName, array $rules){
+        $v = new YavlFieldsMap($rules);
+        $v->getRulesFor($fieldName);
+    }
+
+    /**
+     * @test
+     * @covers YavlFieldsMap::getRulesFor
+     * @dataProvider validFieldNameAndRulesProvider
+     * @param string $fieldName
+     * @param array $rules
+     */
+    public function inArrayMeansThatCanGetItsRules(string $fieldName, array $rules){
+        $v = new YavlFieldsMap($rules);
+        $r = $v->getRulesFor($fieldName);
+        self::assertTrue(AssociativeArrayHelper::isAssociative($r));
+    }
+
 }

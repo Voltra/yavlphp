@@ -1,0 +1,20 @@
+{
+  "fields": {
+    "a": {
+      "required": "true",
+      "rules": {
+        "regex": "^\\w+\\d+$",
+        "minLength": "6",
+        "maxLength": "64"
+      }
+    },
+    "unit": {
+      "required": false,
+      "type": "int",
+      "rules": {
+        "min": 10,
+        "max": 20
+      }
+    }
+  }
+}

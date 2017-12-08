@@ -35,7 +35,7 @@ class Yavl {
      */
     protected $coreRules;
 
-    public function __construct(YavlFieldsMap $fields, YavlLocaleMap $locale) {
+    public function __construct(YavlFieldsMap $fields, ?YavlLocaleMap $locale = null) {
         $this->pluginRules = [];
         $this->coreRules = [];
 
@@ -48,12 +48,15 @@ class Yavl {
         $this->coreRules["match"] = new YavlMatch();
 
         $this->fields = $fields;
-        $this->locale = $locale;
+        $this->locale = is_null($locale) ? new YavlLocaleMap([]) : $locale;
     }
 
-    public static function fromJson(string $rulesPath, string $localePath) : self{
+    public static function fromJson(string $rulesPath, ?string $localePath=null) : self{
         $fields = JsonRead::from($rulesPath);
-        $localeArray = JsonRead::from($localePath);
+        $localeArray = is_null($localePath) ? [] : JsonRead::from($localePath);
+
+        if(!array_key_exists("fields", $fields))
+            throw new InvalidArgumentException("The given rules JSON file doesn't have a 'fields' property");
 
         $fields = new YavlFieldsMap($fields["fields"]);
         $locale = new YavlLocaleMap($localeArray);
@@ -64,24 +67,24 @@ class Yavl {
     public function validate(?array $fieldsValues = null) : array{
         if(is_null($fieldsValues)){
             if($_SERVER["REQUEST_METHOD"] === "GET")
-                $fieldsValues = array_merge([], $_GET);
+                return $this->validate($_GET);
             else
-                $fieldsValues = array_merge([], $_POST);
+                return $this->validate($_POST);
         }
 
         if(!AssociativeArrayHelper::isAssociative($fieldsValues))
             throw new InvalidArgumentException("The fields values array is not an associative array : fieldName=>fieldValue");
 
         $errors = [];
+        $fields = $this->fields->getMap();
 
-        array_walk($this->fields->getMap(), function(array $rules, string $field) use($fieldsValues, $errors){
-            $isFilled = $fieldsValues[$field] !== "";
-            $required = $this->isRequired($field, $rules);
+        array_walk($fields, function(array $fieldSettings, string $field) use($fieldsValues, &$errors){
+            $rules = array_key_exists("rules", $fieldSettings) ? $fieldSettings["rules"] : null;
+            $isFilled = isset($fieldsValues[$field]);
+            $required = $this->isRequired($fieldSettings);
 
 
             if($isFilled || $required){
-                $value = $fieldsValues[$field];
-
                 if($required){
                     if(!$isFilled) {
                         $errors[$field] = $this->locale->get("required");
@@ -89,9 +92,11 @@ class Yavl {
                     }
                 }
 
+                $value = $fieldsValues[$field];
+
                 if($rules){
-                    if(array_key_exists("type", $rules)){
-                        switch($rules["type"]){
+                    if(array_key_exists("type", $fieldSettings)){
+                        switch($fieldSettings["type"]){
                             case "int":
                                 $value = intval($value);
                                 if(is_nan($value))
@@ -114,27 +119,27 @@ class Yavl {
 
                     foreach($rules as $rule => $expected){
                         if(array_key_exists($rule, $this->coreRules)){
-                            $invalid = $this->coreRules["{$rule}"](
+                            $invalid = $this->coreRules["{$rule}"]->call(
                                 $this->locale,
                                 $value,
                                 $expected,
                                 $fieldsValues
                             );
 
-                            if($invalid) {
-                                $errors[$field] = $invalid;
+                            if(!is_null($invalid)) {
+                                $errors[$field] = str_replace("%value%", $expected, $invalid);
                                 break;
                             }
                         }elseif(array_key_exists($rule, $this->pluginRules)){
-                            $invalid = $this->pluginRules["{$rule}"](
+                            $invalid = $this->pluginRules["{$rule}"]->call(
                                 $this->locale,
                                 $value,
                                 $expected,
                                 $fieldsValues
                             );
 
-                            if($invalid) {
-                                $errors[$field] = $invalid;
+                            if(!is_null($invalid)) {
+                                $errors[$field] = str_replace("%value%", $expected, $invalid);
                                 break;
                             }
                         }
@@ -147,14 +152,15 @@ class Yavl {
         return $errors;
     }
 
-    protected function isRequired(string $field, array $rules) : bool{
-        if(array_key_exists("required", $rules))
-            return boolval( $rules["required"] );
+    protected function isRequired(array $fieldSettings) : bool{
+        if(array_key_exists("required", $fieldSettings))
+            return boolval( $fieldSettings["required"] );
 
         return false;
     }
 
-    public function registerPlugin(string $ruleName, YavlValidationFunction $ruleFunction) : self{
+    public function registerPlugin(YavlValidationFunction $ruleFunction) : self{
+        $ruleName = $ruleFunction->getNameForJson();
         $this->pluginRules[$ruleName] = $ruleFunction;
         return $this;
     }
@@ -162,5 +168,9 @@ class Yavl {
     public function removePlugin(string $ruleName) : self{
         unset($this->pluginRules[$ruleName]);
         return $this;
+    }
+
+    public function getPluginNamesList() : array{
+        return array_keys($this->pluginRules);
     }
 }

@@ -1,0 +1,10 @@
+{
+  "NaN": "That should be a number, I guess. Sadly, it isn't one.",
+  "required": "Hey did you think you could get past me ?",
+  "min": "That should be &ge; %value%.",
+  "max": "That should be &le; %value%.",
+  "nomatch_regex": "Format invalide.",
+  "minLength": "At least %value% characters ffs.",
+  "maxLength": "%value% characters is way too much !",
+  "notEqual": "I can sense a disturbance in the equivalence."
+}

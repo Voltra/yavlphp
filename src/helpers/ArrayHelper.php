@@ -41,4 +41,8 @@ abstract class ArrayHelper {
             return $acc;
         }, 0) === 0;
     }
+
+    public static function isEmpty(array $arr) : bool{
+        return empty($arr);
+    }
 }
